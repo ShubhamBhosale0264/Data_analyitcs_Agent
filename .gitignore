@@ -1,0 +1,25 @@
+# Django
+*.pyc
+__pycache__/
+.env
+db.sqlite3
+media/
+staticfiles/
+
+# Python
+.venv/
+*.egg-info/
+dist/
+.pytest_cache/
+
+# Data files (can be large)
+*.parquet
+*.csv
+*.xlsx
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+docker-compose.override.yml

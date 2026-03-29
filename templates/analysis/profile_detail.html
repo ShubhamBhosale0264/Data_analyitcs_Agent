@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+{% block title %}Profile: {{ dataset.name }}{% endblock %}
+{% block content %}
+<div class="mb-6">
+  <h1 class="text-xl font-medium">{{ dataset.name }}</h1>
+  <p class="text-sm text-gray-500 mt-1">{{ dataset.row_count }} rows · {{ dataset.column_count }} columns</p>
+</div>
+{% if profile.ai_narrative %}
+<div class="bg-indigo-50 border border-indigo-100 rounded-xl p-5 mb-6">
+  <div class="text-xs font-medium text-indigo-600 uppercase tracking-wide mb-2">AI Narrative</div>
+  <p class="text-sm text-gray-700 leading-relaxed">{{ profile.ai_narrative }}</p>
+</div>
+{% endif %}
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+    <div class="text-2xl font-semibold">{{ profile.completeness_score|default:"–" }}%</div>
+    <div class="text-xs text-gray-500 mt-1">Completeness</div>
+  </div>
+  <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+    <div class="text-2xl font-semibold">{{ profile.uniqueness_score|default:"–" }}%</div>
+    <div class="text-xs text-gray-500 mt-1">Uniqueness</div>
+  </div>
+  <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+    <div class="text-2xl font-semibold">{{ dataset.column_count }}</div>
+    <div class="text-xs text-gray-500 mt-1">Columns</div>
+  </div>
+</div>
+<section>
+  <h2 class="text-base font-medium mb-3">Column profiles</h2>
+  <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="text-left px-4 py-3 font-medium text-gray-700">Column</th>
+          <th class="text-left px-4 py-3 font-medium text-gray-700">Type</th>
+          <th class="text-left px-4 py-3 font-medium text-gray-700">Semantic</th>
+          <th class="text-right px-4 py-3 font-medium text-gray-700">Null %</th>
+          <th class="text-left px-4 py-3 font-medium text-gray-700">Sample values</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for col in columns %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3 font-mono text-xs">{{ col.name }}</td>
+          <td class="px-4 py-3 text-gray-600">{{ col.data_type }}</td>
+          <td class="px-4 py-3"><span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full">{{ col.semantic_type }}</span></td>
+          <td class="px-4 py-3 text-right {% if col.null_percentage > 20 %}text-red-600{% else %}text-gray-600{% endif %}">{{ col.null_percentage|floatformat:1 }}%</td>
+          <td class="px-4 py-3 text-gray-400 text-xs truncate max-w-xs">{{ col.sample_values|join:", " }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="mt-8">
+  <h2 class="text-base font-medium mb-3">Ask your data a question</h2>
+  <div class="bg-white border border-gray-200 rounded-xl p-5">
+    <div class="flex gap-3">
+      <input type="text" id="nl-question" placeholder="e.g. Show total revenue by region, top 10 only"
+             class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <button onclick="askQuestion()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">Ask →</button>
+    </div>
+    <div id="nl-result" class="mt-4"></div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+function askQuestion() {
+  const q = document.getElementById("nl-question").value.trim();
+  if (!q) return;
+  document.getElementById("nl-result").innerHTML = '<p class="text-sm text-gray-400">Generating SQL and chart...</p>';
+  fetch("{% url 'analysis:nl-query' dataset.pk %}", {
+    method:"POST", headers:{"Content-Type":"application/json","X-CSRFToken":"{{ csrf_token }}"},
+    body: JSON.stringify({question: q})
+  }).then(r => r.json()).then(data => {
+    const d = document.getElementById("nl-result");
+    d.setAttribute("hx-get", `/analysis/query/${data.query_id}/status/`);
+    d.setAttribute("hx-trigger","every 2s");
+    d.setAttribute("hx-swap","innerHTML");
+    htmx.process(d);
+  });
+}
+</script>
+{% endblock %}

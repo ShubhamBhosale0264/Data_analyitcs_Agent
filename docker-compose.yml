@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: analytics_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    ports: ["5432:5432"]
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  web:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: daphne -b 0.0.0.0 -p 8000 config.routing:application
+    volumes: [.:/app, media_files:/app/media]
+    ports: ["8000:8000"]
+    env_file: .env
+    environment: { DJANGO_SETTINGS_MODULE: config.settings.development }
+    depends_on: [postgres, redis]
+  worker:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: celery -A config.celery worker --loglevel=info --concurrency=4
+    volumes: [.:/app, media_files:/app/media]
+    env_file: .env
+    environment: { DJANGO_SETTINGS_MODULE: config.settings.development }
+    depends_on: [postgres, redis]
+  flower:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: celery -A config.celery flower --port=5555
+    ports: ["5555:5555"]
+    env_file: .env
+    depends_on: [redis]
+volumes:
+  postgres_data:
+  media_files:

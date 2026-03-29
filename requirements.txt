@@ -1,0 +1,65 @@
+# ── Core Django ─────────────────────────────────
+Django==4.2.11
+django-allauth==0.61.1          # auth with social login support
+django-guardian==2.4.0          # per-object permissions (viewer/editor/admin per dataset)
+django-extensions==3.2.3
+djangorestframework==3.15.1     # API layer for streaming & NL query endpoints
+django-filter==24.1
+
+# ── Async: Celery task queue ─────────────────────
+celery==5.3.6
+django-celery-results==2.5.1    # store task results in DB
+django-celery-beat==2.6.0       # periodic/scheduled tasks
+flower==2.0.1                   # Celery monitoring dashboard
+redis==5.0.3
+
+# ── Real-time: Django Channels ───────────────────
+channels==4.0.0
+channels-redis==4.2.0
+daphne==4.1.0                   # ASGI server (replaces gunicorn for WS support)
+
+# ── Data & Analysis ──────────────────────────────
+pandas==2.2.1
+numpy==1.26.4
+scipy==1.12.0
+scikit-learn==1.4.1             # IsolationForest for anomaly detection
+ydata-profiling==4.7.0          # automated dataset profiling
+pyarrow==15.0.2                 # parquet storage for processed datasets
+openpyxl==3.1.2                 # Excel read/write
+chardet==5.2.0                  # file encoding detection
+
+# ── Database connectors ──────────────────────────
+SQLAlchemy==2.0.29              # connect analyst's own DBs
+psycopg2-binary==2.9.9          # PostgreSQL driver
+pymysql==1.1.0                  # MySQL connector
+
+# ── Visualizations ───────────────────────────────
+plotly==5.20.0                  # chart config generation (JSON → browser renders)
+
+# ── AI / LLM layer ───────────────────────────────
+anthropic==0.21.3               # Claude API client
+langchain==0.1.13               # LLM orchestration
+langchain-anthropic==0.1.6
+openai==1.16.2                  # fallback LLM option
+
+# ── Export ───────────────────────────────────────
+weasyprint==61.2                # HTML → PDF export
+reportlab==4.1.0                # programmatic PDF (charts)
+
+# ── Storage ──────────────────────────────────────
+django-storages==1.14.2         # S3 / local file storage abstraction
+boto3==1.34.69                  # AWS S3 (optional, can use local in dev)
+
+# ── Monitoring & Logging ─────────────────────────
+sentry-sdk==1.44.0
+structlog==24.1.0
+
+# ── Dev tools ────────────────────────────────────
+black==24.3.0
+ruff==0.3.4
+pytest==8.1.1
+pytest-django==4.8.0
+pytest-celery==0.0.0
+factory-boy==3.3.0              # test data factories
+ipython==8.23.0
+django-debug-toolbar==4.3.0
