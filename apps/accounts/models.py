@@ -54,7 +54,12 @@ class Workspace(UUIDModel):
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="owned_workspaces")
-    members = models.ManyToManyField(User, through="WorkspaceMembership", related_name="workspaces")
+    members = models.ManyToManyField(
+    User,
+    through="WorkspaceMembership",
+    through_fields=("workspace", "user"),
+    related_name="workspaces",
+)
     logo = models.ImageField(upload_to="workspace_logos/", null=True, blank=True)
 
     def __str__(self):
