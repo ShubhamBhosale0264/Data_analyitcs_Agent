@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,745 +8,179 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #080c10;
-      --bg2: #0d1117;
-      --surface: #111820;
-      --border: rgba(255,255,255,0.07);
-      --accent: #00e5ff;
-      --accent2: #7b61ff;
-      --accent3: #ff6b35;
-      --text: #e8edf2;
-      --muted: #6b7a8d;
+      --bg: #080c10; --bg2: #0d1117; --surface: #111820;
+      --border: rgba(255,255,255,0.07); --accent: #00e5ff;
+      --accent2: #7b61ff; --accent3: #ff6b35;
+      --text: #e8edf2; --muted: #6b7a8d;
       --mono: 'DM Mono', monospace;
       --sans: 'DM Sans', sans-serif;
       --display: 'Syne', sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ─── NOISE OVERLAY ─── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    /* ─── GRID LINES ─── */
+    /* Grid background */
     .grid-bg {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image:
         linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
       background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    /* ─── NAV ─── */
+    /* NAV */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      height: 68px;
-      background: rgba(8,12,16,0.85);
-      backdrop-filter: blur(20px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 68px;
+      background: rgba(8,12,16,0.85); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
-
     .nav-logo {
-      font-family: var(--display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-family: var(--display); font-size: 1.1rem; font-weight: 800;
+      letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
     }
-
     .nav-logo .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 12px var(--accent);
       animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 36px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
-
-    .nav-cta {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      padding: 9px 20px;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      transition: all 0.2s;
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-user { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); letter-spacing: 0.04em; }
+    .btn-nav {
+      font-family: var(--mono); font-size: 0.78rem; padding: 9px 20px;
+      border: 1px solid var(--accent); color: var(--accent); text-decoration: none;
+      letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.2s;
     }
-
-    .nav-cta:hover {
-      background: var(--accent);
-      color: var(--bg);
+    .btn-nav:hover { background: var(--accent); color: var(--bg); }
+    .btn-nav-outline {
+      font-family: var(--mono); font-size: 0.78rem; padding: 9px 20px;
+      border: 1px solid var(--border); color: var(--muted); text-decoration: none;
+      letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.2s;
     }
+    .btn-nav-outline:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
 
-    /* ─── HERO ─── */
+    /* HERO */
     .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 48px 80px;
-      text-align: center;
-      z-index: 1;
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 120px 48px 80px; text-align: center; z-index: 1;
     }
-
-    /* Radial glow */
     .hero::after {
-      content: '';
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 500px;
+      content: ''; position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 500px;
       background: radial-gradient(ellipse, rgba(0,229,255,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
-
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid rgba(0,229,255,0.2);
-      padding: 6px 16px;
-      margin-bottom: 36px;
-      animation: fadeUp 0.6s ease both;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid rgba(0,229,255,0.2); padding: 6px 16px;
+      margin-bottom: 36px; animation: fadeUp 0.6s ease both;
     }
-
-    .hero-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
+    .hero-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); }
     .hero-title {
-      font-family: var(--display);
-      font-size: clamp(3rem, 8vw, 7rem);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-      margin-bottom: 32px;
+      font-family: var(--display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 800;
+      line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 32px;
       animation: fadeUp 0.6s 0.1s ease both;
     }
-
     .hero-title .line2 {
       display: block;
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .hero-sub {
-      max-width: 560px;
-      font-size: 1.05rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 52px;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-
+    .hero-sub { max-width: 560px; font-size: 1.05rem; color: var(--muted); line-height: 1.7; margin-bottom: 52px; animation: fadeUp 0.6s 0.2s ease both; }
+    .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeUp 0.6s 0.3s ease both; }
     .btn-primary {
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 14px 32px;
-      background: var(--accent);
-      color: var(--bg);
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
+      font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 32px; background: var(--accent); color: var(--bg); text-decoration: none;
+      font-weight: 500; transition: all 0.2s;
     }
-
-    .btn-primary::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.1);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .btn-primary:hover::after { opacity: 1; }
     .btn-primary:hover { box-shadow: 0 0 30px rgba(0,229,255,0.35); }
-
     .btn-secondary {
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 14px 32px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      text-decoration: none;
-      transition: all 0.2s;
+      font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 32px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; transition: all 0.2s;
     }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
 
-    .btn-secondary:hover {
-      border-color: rgba(255,255,255,0.2);
-      color: var(--text);
-    }
-
-    /* ─── DASHBOARD PREVIEW ─── */
+    /* DASHBOARD PREVIEW */
     .preview-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 980px;
-      margin: 72px auto 0;
-      animation: fadeUp 0.8s 0.4s ease both;
-      z-index: 1;
+      position: relative; width: 100%; max-width: 980px; margin: 72px auto 0;
+      animation: fadeUp 0.8s 0.4s ease both; z-index: 1;
     }
-
     .preview-wrap::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
+      content: ''; position: absolute; inset: -1px;
       background: linear-gradient(135deg, rgba(0,229,255,0.3), rgba(123,97,255,0.2), transparent 60%);
       z-index: -1;
     }
-
-    .dashboard {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 24px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: auto auto;
-      gap: 16px;
-    }
-
-    .dash-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      padding: 20px;
-    }
-
+    .dashboard { background: var(--surface); border: 1px solid var(--border); padding: 24px; display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .dash-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 20px; }
     .dash-card.wide { grid-column: span 2; }
-    .dash-card.full { grid-column: span 4; }
-
-    .dash-label {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .dash-value {
-      font-family: var(--display);
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
+    .dash-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .dash-value { font-family: var(--display); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
+    .dash-value.blue { color: var(--accent); }
     .dash-value.up { color: #00e5a0; }
     .dash-value.down { color: var(--accent3); }
-    .dash-value.blue { color: var(--accent); }
     .dash-value.purple { color: var(--accent2); }
+    .dash-delta { font-family: var(--mono); font-size: 0.7rem; color: #00e5a0; margin-top: 4px; }
+    .spark { width: 100%; height: 50px; margin-top: 12px; }
+    .bars { display: flex; align-items: flex-end; gap: 6px; height: 60px; margin-top: 12px; }
+    .bar { flex: 1; background: linear-gradient(to top, var(--accent), rgba(0,229,255,0.3)); border-radius: 2px 2px 0 0; }
 
-    .dash-delta {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: #00e5a0;
-      margin-top: 4px;
-    }
+    /* TICKER */
+    .ticker-wrap { position: relative; z-index: 1; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0; background: rgba(0,229,255,0.03); }
+    .ticker { display: flex; gap: 60px; animation: ticker 20s linear infinite; width: max-content; }
+    .ticker-item { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .ticker-item span { color: var(--accent); margin-right: 8px; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-    /* SVG sparkline chart */
-    .spark {
-      width: 100%;
-      height: 50px;
-      margin-top: 12px;
-    }
-
-    /* Bar chart */
-    .bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      height: 60px;
-      margin-top: 12px;
-    }
-
-    .bar {
-      flex: 1;
-      background: linear-gradient(to top, var(--accent), rgba(0,229,255,0.3));
-      border-radius: 2px 2px 0 0;
-      transition: opacity 0.2s;
-    }
-
-    /* ─── STATS ROW ─── */
-    .stats {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      padding: 0 48px;
-      margin: 80px 0;
-    }
-
-    .stat {
-      flex: 1;
-      max-width: 280px;
-      padding: 40px 48px;
-      border-top: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      animation: fadeUp 0.6s ease both;
-    }
-
+    /* STATS */
+    .stats { position: relative; z-index: 1; display: flex; justify-content: center; padding: 0 48px; margin: 80px 0; }
+    .stat { flex: 1; max-width: 280px; padding: 40px 48px; border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
     .stat:first-child { border-left: 1px solid var(--border); }
+    .stat-num { font-family: var(--display); font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--text) 0%, var(--muted) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
 
-    .stat-num {
-      font-family: var(--display);
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      background: linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .stat-label {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* ─── FEATURES ─── */
-    .features {
-      position: relative;
-      z-index: 1;
-      padding: 80px 48px;
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-family: var(--display);
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      max-width: 640px;
-      margin-bottom: 64px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .feature-card {
-      background: var(--bg2);
-      padding: 40px 36px;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.3s;
-    }
-
+    /* FEATURES */
+    .features { position: relative; z-index: 1; padding: 80px 48px; }
+    .section-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+    .section-title { font-family: var(--display); font-size: clamp(2rem,4vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; max-width: 640px; margin-bottom: 64px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .feature-card { background: var(--bg2); padding: 40px 36px; position: relative; overflow: hidden; transition: background 0.3s; }
     .feature-card:hover { background: var(--surface); }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
+    .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),transparent); opacity:0; transition:opacity 0.3s; }
     .feature-card:hover::before { opacity: 1; }
+    .feature-icon { width:44px; height:44px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:24px; color:var(--accent); }
+    .feature-title { font-family: var(--display); font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+    .feature-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+    .feature-tag { display:inline-block; font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent2); border:1px solid rgba(123,97,255,0.2); padding:3px 10px; margin-top:20px; }
 
-    .feature-icon {
-      width: 44px; height: 44px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      margin-bottom: 24px;
-      color: var(--accent);
-    }
+    /* CTA */
+    .cta-section { position: relative; z-index: 1; padding: 100px 48px; text-align: center; }
+    .cta-section::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:400px; background:radial-gradient(ellipse,rgba(123,97,255,0.12) 0%,transparent 70%); pointer-events:none; }
+    .cta-title { font-family: var(--display); font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 28px; }
+    .cta-sub { font-size: 1rem; color: var(--muted); max-width: 440px; margin: 0 auto 44px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
-    .feature-title {
-      font-family: var(--display);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: -0.01em;
-    }
-
-    .feature-desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .feature-tag {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      border: 1px solid rgba(123,97,255,0.2);
-      padding: 3px 10px;
-      margin-top: 20px;
-    }
-
-    /* ─── PIPELINE SECTION ─── */
-    .pipeline {
-      position: relative;
-      z-index: 1;
-      padding: 80px 48px;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .pipeline-flow {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      margin-top: 60px;
-      overflow-x: auto;
-    }
-
-    .pipeline-step {
-      flex: 1;
-      min-width: 160px;
-      padding: 28px 24px;
-      border: 1px solid var(--border);
-      position: relative;
-      background: var(--bg);
-    }
-
-    .pipeline-step + .pipeline-step {
-      margin-left: -1px;
-    }
-
-    .step-num {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .step-name {
-      font-family: var(--display);
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .step-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .step-active {
-      border-color: rgba(0,229,255,0.3);
-      background: rgba(0,229,255,0.04);
-    }
-
-    .step-active .step-name { color: var(--accent); }
-
-    /* Arrow between steps */
-    .step-arrow {
-      width: 32px;
-      height: 1px;
-      background: var(--border);
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .step-arrow::after {
-      content: '›';
-      position: absolute;
-      right: -6px;
-      top: -10px;
-      color: var(--muted);
-      font-size: 1.2rem;
-    }
-
-    /* ─── INTEGRATIONS ─── */
-    .integrations {
-      position: relative;
-      z-index: 1;
-      padding: 80px 48px;
-      text-align: center;
-    }
-
-    .integration-logos {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2px;
-      margin-top: 48px;
-    }
-
-    .integration-badge {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 10px 20px;
-      transition: all 0.2s;
-    }
-
-    .integration-badge:hover {
-      border-color: rgba(255,255,255,0.15);
-      color: var(--text);
-      background: var(--surface);
-    }
-
-    /* ─── CTA ─── */
-    .cta-section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 48px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(123,97,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-title {
-      font-family: var(--display);
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 28px;
-    }
-
-    .cta-sub {
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 440px;
-      margin: 0 auto 44px;
-    }
-
-    .cta-input-row {
-      display: flex;
-      gap: 0;
-      max-width: 460px;
-      margin: 0 auto;
-    }
-
-    .cta-input {
-      flex: 1;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      padding: 14px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-right: none;
-      color: var(--text);
-      outline: none;
-      letter-spacing: 0.02em;
-    }
-
-    .cta-input::placeholder { color: var(--muted); }
-    .cta-input:focus { border-color: rgba(0,229,255,0.3); }
-
-    /* ─── FOOTER ─── */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-logo {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 0.95rem;
-      letter-spacing: -0.02em;
-    }
-
-    .footer-copy {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 28px;
-      list-style: none;
-    }
-
-    .footer-links a {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
+    /* FOOTER */
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 48px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: var(--display); font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em; }
+    .footer-copy { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text); }
 
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* Scroll reveal */
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ─── TICKER ─── */
-    .ticker-wrap {
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 0;
-      background: rgba(0,229,255,0.03);
-    }
-
-    .ticker {
-      display: flex;
-      gap: 60px;
-      animation: ticker 20s linear infinite;
-      width: max-content;
-    }
-
-    .ticker-item {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .ticker-item span { color: var(--accent); margin-right: 8px; }
-
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       nav { padding: 0 24px; }
       .nav-links { display: none; }
@@ -753,10 +188,8 @@
       .features-grid { grid-template-columns: 1fr; }
       .stats { flex-direction: column; padding: 0 24px; }
       .stat { max-width: 100%; border-left: 1px solid var(--border); }
-      .features, .pipeline, .integrations, .cta-section { padding: 60px 24px; }
+      .features, .cta-section { padding: 60px 24px; }
       footer { flex-direction: column; gap: 20px; padding: 36px 24px; text-align: center; }
-      .pipeline-flow { flex-direction: column; }
-      .step-arrow { display: none; }
     }
   </style>
 </head>
@@ -766,22 +199,33 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">
+  <a class="nav-logo" href="{% url 'core:landing' %}">
     <span class="dot"></span>
     AnalyticsOS
   </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
-    <li><a href="#pipeline">Pipeline</a></li>
-    <li><a href="#integrations">Integrations</a></li>
-    <li><a href="#">Docs</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#cta">Get Started</a></li>
+    {% if user.is_authenticated %}
+    <li><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+    {% endif %}
   </ul>
-  <a class="nav-cta" href="#">Get Access</a>
+  <div class="nav-right">
+    {% if user.is_authenticated %}
+      <span class="nav-user">{{ user.get_full_name|default:user.username }}</span>
+      <a class="btn-nav-outline" href="{% url 'account_logout' %}">Logout</a>
+      <a class="btn-nav" href="{% url 'core:dashboard' %}">Dashboard →</a>
+    {% else %}
+      <a class="btn-nav-outline" href="{% url 'account_login' %}">Login</a>
+      <a class="btn-nav" href="{% url 'account_signup' %}">Get Access</a>
+    {% endif %}
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">Now in Beta — Django 6.0</div>
+  <div class="hero-badge">Now Live — Django 6.0</div>
   <h1 class="hero-title">
     Data that<br>
     <span class="line2">thinks ahead</span>
@@ -792,14 +236,18 @@
     without the complexity.
   </p>
   <div class="hero-actions">
-    <a class="btn-primary" href="#">Start Free Trial</a>
-    <a class="btn-secondary" href="#">View Demo →</a>
+    {% if user.is_authenticated %}
+      <a class="btn-primary" href="{% url 'core:dashboard' %}">Go to Dashboard</a>
+      <a class="btn-secondary" href="{% url 'datasets:list' %}">View Datasets →</a>
+    {% else %}
+      <a class="btn-primary" href="{% url 'account_signup' %}">Start Free Trial</a>
+      <a class="btn-secondary" href="{% url 'account_login' %}">Login →</a>
+    {% endif %}
   </div>
 
-  <!-- DASHBOARD PREVIEW -->
+  <!-- Dashboard Preview -->
   <div class="preview-wrap">
     <div class="dashboard">
-      <!-- KPI Cards -->
       <div class="dash-card">
         <div class="dash-label">Total Events</div>
         <div class="dash-value blue">4.2M</div>
@@ -820,8 +268,6 @@
         <div class="dash-value down">0.03%</div>
         <div class="dash-delta" style="color:var(--accent3)">↑ minor spike</div>
       </div>
-
-      <!-- Sparkline -->
       <div class="dash-card wide">
         <div class="dash-label">Event Volume — 7 days</div>
         <svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none">
@@ -835,20 +281,16 @@
           <path d="M0,40 L40,32 L80,28 L120,20 L160,22 L200,10 L240,14 L300,5 L300,50 L0,50Z" fill="url(#sg)"/>
         </svg>
       </div>
-
-      <!-- Bar chart -->
       <div class="dash-card wide">
         <div class="dash-label">Requests by Hour</div>
         <div class="bars">
           <div class="bar" style="height:40%"></div>
           <div class="bar" style="height:55%"></div>
-          <div class="bar" style="height:45%"></div>
           <div class="bar" style="height:70%"></div>
           <div class="bar" style="height:85%"></div>
-          <div class="bar" style="height:65%"></div>
           <div class="bar" style="height:90%"></div>
+          <div class="bar" style="height:65%"></div>
           <div class="bar" style="height:75%"></div>
-          <div class="bar" style="height:60%"></div>
           <div class="bar" style="height:50%"></div>
           <div class="bar" style="height:35%"></div>
           <div class="bar" style="height:25%"></div>
@@ -869,7 +311,6 @@
     <span class="ticker-item"><span>●</span> SQL & NoSQL support</span>
     <span class="ticker-item"><span>●</span> Role-based access</span>
     <span class="ticker-item"><span>●</span> Built-in alerting</span>
-    <!-- duplicate for seamless loop -->
     <span class="ticker-item"><span>●</span> Real-time streaming</span>
     <span class="ticker-item"><span>●</span> Zero-config setup</span>
     <span class="ticker-item"><span>●</span> Power BI compatible</span>
@@ -882,7 +323,7 @@
 </div>
 
 <!-- STATS -->
-<div class="stats">
+<div class="stats" id="stats">
   <div class="stat reveal">
     <div class="stat-num">99.9%</div>
     <div class="stat-label">Uptime SLA</div>
@@ -909,13 +350,13 @@
     <div class="feature-card reveal">
       <div class="feature-icon">⚡</div>
       <div class="feature-title">Real-Time Streaming</div>
-      <div class="feature-desc">Ingest and process millions of events per second with sub-100ms latency. WebSocket-native with Channels support built in.</div>
+      <div class="feature-desc">Ingest and process millions of events per second with sub-100ms latency. WebSocket-native with Django Channels.</div>
       <div class="feature-tag">Django Channels</div>
     </div>
     <div class="feature-card reveal" style="transition-delay:0.1s">
       <div class="feature-icon">📊</div>
       <div class="feature-title">Visual Dashboards</div>
-      <div class="feature-desc">Drag-and-drop dashboard builder with 30+ chart types. Export to Power BI, Google Sheets, or raw CSV instantly.</div>
+      <div class="feature-desc">Drag-and-drop dashboard builder with 30+ chart types. Export to Power BI, Google Sheets, or CSV instantly.</div>
       <div class="feature-tag">Power BI Ready</div>
     </div>
     <div class="feature-card reveal" style="transition-delay:0.2s">
@@ -945,74 +386,17 @@
   </div>
 </section>
 
-<!-- PIPELINE -->
-<section class="pipeline" id="pipeline">
-  <div class="section-label">// data flow</div>
-  <h2 class="section-title reveal">From raw data to insight in one pipeline</h2>
-  <div class="pipeline-flow">
-    <div class="pipeline-step reveal">
-      <div class="step-num">01 / INGEST</div>
-      <div class="step-name">Collect</div>
-      <div class="step-desc">HTTP events, Kafka, S3, database CDC, or direct SDK integration</div>
-    </div>
-    <div class="step-arrow"></div>
-    <div class="pipeline-step step-active reveal" style="transition-delay:0.1s">
-      <div class="step-num">02 / TRANSFORM</div>
-      <div class="step-name">Process</div>
-      <div class="step-desc">Schema validation, enrichment, deduplication, and aggregation in real time</div>
-    </div>
-    <div class="step-arrow"></div>
-    <div class="pipeline-step reveal" style="transition-delay:0.2s">
-      <div class="step-num">03 / STORE</div>
-      <div class="step-name">Persist</div>
-      <div class="step-desc">Auto-partitioned columnar storage optimized for analytical queries</div>
-    </div>
-    <div class="step-arrow"></div>
-    <div class="pipeline-step reveal" style="transition-delay:0.3s">
-      <div class="step-num">04 / QUERY</div>
-      <div class="step-name">Analyze</div>
-      <div class="step-desc">SQL editor, visual query builder, or API — always sub-50ms results</div>
-    </div>
-    <div class="step-arrow"></div>
-    <div class="pipeline-step reveal" style="transition-delay:0.4s">
-      <div class="step-num">05 / DELIVER</div>
-      <div class="step-name">Act</div>
-      <div class="step-desc">Dashboards, alerts, webhooks, or direct export to any BI tool</div>
-    </div>
-  </div>
-</section>
-
-<!-- INTEGRATIONS -->
-<section class="integrations" id="integrations">
-  <div class="section-label">// integrations</div>
-  <h2 class="section-title reveal" style="margin: 0 auto 0; text-align:center;">Plugs into your stack</h2>
-  <div class="integration-logos reveal">
-    <div class="integration-badge">PostgreSQL</div>
-    <div class="integration-badge">MySQL</div>
-    <div class="integration-badge">MongoDB</div>
-    <div class="integration-badge">Redis</div>
-    <div class="integration-badge">Kafka</div>
-    <div class="integration-badge">Celery</div>
-    <div class="integration-badge">Power BI</div>
-    <div class="integration-badge">Google Sheets</div>
-    <div class="integration-badge">Zoho CRM</div>
-    <div class="integration-badge">Google Analytics</div>
-    <div class="integration-badge">Stripe</div>
-    <div class="integration-badge">AWS S3</div>
-    <div class="integration-badge">BigQuery</div>
-    <div class="integration-badge">Snowflake</div>
-    <div class="integration-badge">Slack</div>
-    <div class="integration-badge">PagerDuty</div>
-  </div>
-</section>
-
 <!-- CTA -->
-<section class="cta-section">
+<section class="cta-section" id="cta">
   <h2 class="cta-title reveal">Ready to see<br>your data clearly?</h2>
-  <p class="cta-sub reveal">Join the beta. No credit card required. Up and running in under 5 minutes.</p>
-  <div class="cta-input-row reveal">
-    <input class="cta-input" type="email" placeholder="your@email.com" />
-    <a class="btn-primary" href="#" style="white-space:nowrap">Request Access</a>
+  <p class="cta-sub reveal">No credit card required. Up and running in under 5 minutes.</p>
+  <div class="cta-actions reveal">
+    {% if user.is_authenticated %}
+      <a class="btn-primary" href="{% url 'core:dashboard' %}">Go to Dashboard</a>
+    {% else %}
+      <a class="btn-primary" href="{% url 'account_signup' %}">Create Free Account</a>
+      <a class="btn-secondary" href="{% url 'account_login' %}">Login</a>
+    {% endif %}
   </div>
 </section>
 
@@ -1020,42 +404,29 @@
 <footer>
   <div class="footer-logo">AnalyticsOS</div>
   <ul class="footer-links">
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms</a></li>
-    <li><a href="#">Status</a></li>
-    <li><a href="#">GitHub</a></li>
+    <li><a href="{% url 'account_login' %}">Login</a></li>
+    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+    <li><a href="/admin/">Admin</a></li>
   </ul>
   <div class="footer-copy">© 2026 AnalyticsOS. All rights reserved.</div>
 </footer>
 
 <script>
-  // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
     });
   }, { threshold: 0.1 });
-
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Nav scroll effect
   window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    nav.style.borderBottomColor = window.scrollY > 40
-      ? 'rgba(255,255,255,0.1)'
-      : 'rgba(255,255,255,0.07)';
+    document.querySelector('nav').style.borderBottomColor =
+      window.scrollY > 40 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)';
   });
 
-  // Animate bars on load
   document.querySelectorAll('.bar').forEach((bar, i) => {
     bar.style.opacity = '0';
-    setTimeout(() => {
-      bar.style.transition = 'opacity 0.4s ease';
-      bar.style.opacity = '1';
-    }, 800 + i * 60);
+    setTimeout(() => { bar.style.transition = 'opacity 0.4s ease'; bar.style.opacity = '1'; }, 800 + i * 60);
   });
 </script>
 </body>

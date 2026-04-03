@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, CreateView, UpdateView
+from django.views.generic import DetailView, CreateView, TemplateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Workspace, WorkspaceMembership
@@ -49,3 +49,11 @@ class InviteMemberView(LoginRequiredMixin, CreateView):
         form.instance.workspace = workspace
         form.instance.invited_by = self.request.user
         return super().form_valid(form)
+class LandingView(TemplateView):
+    template_name = 'core/landing.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # safe — works for both anonymous and authenticated users
+        context['user'] = self.request.user
+        return context
