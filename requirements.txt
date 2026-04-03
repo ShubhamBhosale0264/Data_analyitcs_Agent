@@ -64,3 +64,4 @@ pytest-celery==0.0.0
 factory-boy==3.3.0              # test data factories
 ipython==8.23.0
 django-debug-toolbar==4.3.0
+whitenoise
